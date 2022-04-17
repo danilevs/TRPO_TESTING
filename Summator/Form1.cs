@@ -84,17 +84,110 @@ namespace Testing
 
         private void textBox1_KeyPress_1(object sender, KeyPressEventArgs e)
         {
+            e.Handled = !(e.KeyChar == 8 || Char.IsDigit(e.KeyChar) || ((e.KeyChar == System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator[0]) && (DS_Count(((TextBox)sender).Text) < 1)));
         }
 
         private void textBox2_KeyPress(object sender, KeyPressEventArgs e)
         {
-            
+            e.Handled = !(e.KeyChar == 8 || Char.IsDigit(e.KeyChar) || ((e.KeyChar == System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator[0]) && (DS_Count(((TextBox)sender).Text) < 1)));
+
 
         }
 
         private void button3_Click(object sender, EventArgs e)
         {
-           
+            string path = @"counters.txt";
+            if (File.Exists(path))
+            {
+                StreamReader sr = new StreamReader(path, System.Text.Encoding.Default);
+
+
+
+                while (((line = sr.ReadLine()) != null) && k != 2)
+                {
+                    lines[k] = line;
+                    k++;
+                }
+
+                if (lines[0] != null && lines[1] == null)
+                {
+                    MessageBox.Show("В файле содержится только одно слагаемое", "Введите второе слагаемое", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    longcoord = true;
+                }
+
+                if (lines[0] == "" && !(lines[1] == "" || lines[1] == null))
+                {
+                    MessageBox.Show("В файле содержится только одно слагаемое", "Введите первое слагаемое", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    longcoord = true;
+                }
+
+                if (longcoord == false)
+                {
+
+                    if (lines[1] != "")
+                    {
+                        try
+                        {
+                            double resu = Convert.ToDouble(lines[0]);
+
+                        }
+                        catch (FormatException)
+                        {
+                            MessageBox.Show("Слагаемые введены неверно!", "Неверный формат слагаемых", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            longcoord = true;
+                        }
+                    }
+
+
+                    if (lines[1] != "" || lines[1] != null)
+                    {
+                        try
+                        {
+                            double resu1 = Convert.ToDouble(lines[1]);
+                        }
+                        catch (FormatException)
+                        {
+                            MessageBox.Show("Слагаемые введены неверно!", "Неверный формат слагаемых", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            longcoord = true;
+                        }
+                    }
+                }
+
+                if ((lines[0] == null && lines[1] == null))
+                {
+                    MessageBox.Show("В файле нет данных", "Файл пуст!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+
+                if (longcoord == false)
+                {
+                    if ((Convert.ToDouble(lines[0]) < 0 || Convert.ToDouble(lines[1]) < 0))
+                    {
+                        MessageBox.Show("В файле содержатся отрицательные числа", "Неверный формат слагаемых", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        longcoord = true;
+                    }
+                }
+
+                if (lines[1] != null)
+                {
+                    if (lines[0].Length > 5 || lines[1].Length > 5)
+                    {
+                        MessageBox.Show("Все значения должны быть не более 5 знаков", "Большое значение", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        longcoord = true;
+                    }
+                }
+
+                if (k == 2 && lines[0] != "" && lines[1] != "" && lines[1] != null && longcoord == false)
+                {
+                    textBox1.Text = lines[0];
+                    textBox2.Text = lines[1];
+                }
+
+                sr.Close();
+            }
+            else
+            {
+                MessageBox.Show("Создайте текстовый файл counters.txt и введите в него данные", "Отсутствует файл входных значений", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void button5_Click(object sender, EventArgs e)
@@ -116,7 +209,25 @@ namespace Testing
 
         private void button4_Click(object sender, EventArgs e)
         {
-           
+            string path1 = @"result.txt";
+            FileStream outtxt = new FileStream($"{path1}", FileMode.OpenOrCreate);
+
+            res = textBox3.Text;
+
+            if (textBox3.Text !="") {
+
+                byte[] array = System.Text.Encoding.Default.GetBytes(res);
+                outtxt.Write(array, 0, array.Length);
+
+                MessageBox.Show("Запись в файл была произведена успешно", "Успешно", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                outtxt.Close();
+            }
+            else
+            {
+                MessageBox.Show("Записывать в файл нечего", "Пусто", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                outtxt.Close();
+            }
         }
     }
 }
