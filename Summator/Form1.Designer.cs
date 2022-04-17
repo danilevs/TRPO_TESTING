@@ -180,7 +180,7 @@
             this.MaximumSize = new System.Drawing.Size(500, 400);
             this.MinimumSize = new System.Drawing.Size(500, 400);
             this.Name = "Form1";
-            this.Text = "Проверка на сложение";
+            this.Text = "Сложение";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
